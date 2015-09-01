@@ -51,8 +51,9 @@ public class MP1 {
 
     public String[] process() throws Exception {
         String[] ret = new String[20];
-       
+
         //TODO
+        // Some changes...
 
         return ret;
     }
