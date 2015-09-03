@@ -3,6 +3,8 @@ import java.lang.reflect.Array;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class MP1 {
     Random generator;
@@ -49,11 +51,62 @@ public class MP1 {
         this.inputFileName = inputFileName;
     }
 
+    String[] getTokenizedString(String in) {
+        StringTokenizer st = new StringTokenizer(in, delimiters);
+        String[] tokens = new String[st.countTokens()];
+        int index = 0;
+
+        while (st.hasMoreTokens()) {
+            tokens[index] = st.nextToken();
+            index++;
+        }
+
+        return tokens;
+    }
+
+    void printTokens(String[] tokens)
+    {
+        for (int i = 0; i < tokens.length; i++) {
+            System.out.println(tokens[i]);
+        }
+    }
+
+    String[] toLowerCase(String[] tokens) {
+        String[] lowerCaseToken = new String[tokens.length];
+        for (int i = 0; i < tokens.length ; i++) {
+            lowerCaseToken[i] = tokens[i].toLowerCase();
+        }
+        return lowerCaseToken;
+    }
+
+    String[] removeWhiteSpace(String[] tokens) {
+        String[] noWhiteSpace = new String[tokens.length];
+        for (int i = 0; i < tokens.length; i++ ) {
+          noWhiteSpace[i] = tokens[i].replaceAll("\\s", "");
+        }
+        return noWhiteSpace;
+    }
+
     public String[] process() throws Exception {
         String[] ret = new String[20];
 
-        //TODO
-        // Some changes...
+        File in = new File(inputFileName);
+        FileReader fileRead = new FileReader(in);
+        BufferedReader bufferedRead = new BufferedReader(fileRead);
+
+        String thisLine;
+        int tempCounter = 0;
+
+        while ((thisLine = bufferedRead.readLine())!=null && tempCounter < 20) {
+            tempCounter++;
+
+            String[] lowerCase = toLowerCase(getTokenizedString(thisLine));
+            String[] noSpace = removeWhiteSpace(lowerCase);
+            System.out.println(thisLine);
+            printTokens(noSpace);
+        }        
+
+        System.out.println("Length of file is: " + in.length() + "\n");
 
         return ret;
     }
