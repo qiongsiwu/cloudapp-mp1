@@ -87,24 +87,63 @@ public class MP1 {
         return noWhiteSpace;
     }
 
+    List<String> removeStopWords(String[] tokens) {
+        List<String> stopWordsList = Arrays.asList(stopWordsArray);
+        List<String> processedTokens = new ArrayList<String>();
+        for (int i = 0; i < tokens.length; i++ ) {
+            if (!stopWordsList.contains(tokens[i])) {
+                processedTokens.add(tokens[i]);
+            }
+        }
+
+        return processedTokens;
+    }
+
+    void printStringList(List<String> tokens) {
+        for (String token : tokens) {
+            System.out.println(token);
+        }
+    }
+
+    List<String> processThisLine(String thisLine) {
+        return removeStopWords(
+                               removeWhiteSpace(
+                                          toLowerCase(
+                                                      (getTokenizedString(thisLine))
+                                                     )
+                                         ));
+    }
+
+
     public String[] process() throws Exception {
         String[] ret = new String[20];
 
+        // Read the file
         File in = new File(inputFileName);
         FileReader fileRead = new FileReader(in);
         BufferedReader bufferedRead = new BufferedReader(fileRead);
 
+        List<String> AllLines = new ArrayList<String>();
         String thisLine;
-        int tempCounter = 0;
+        while ((thisLine = bufferedRead.readLine())!=null) {
+            AllLines.add(thisLine);
+        }
 
-        while ((thisLine = bufferedRead.readLine())!=null && tempCounter < 20) {
-            tempCounter++;
+        // Generate index
+        Integer[] index = getIndexes();
 
-            String[] lowerCase = toLowerCase(getTokenizedString(thisLine));
-            String[] noSpace = removeWhiteSpace(lowerCase);
-            System.out.println(thisLine);
-            printTokens(noSpace);
-        }        
+        // Process lines for each index
+        for (int i = 0; i < index.length; i++ ) {
+            String thisRecord = AllLines.get(index[i]);
+        }
+
+
+        String test = "My dog has been eating an apple";
+        String[] lowerCaseNoSpace = removeWhiteSpace(toLowerCase(getTokenizedString(test)));
+
+        List<String> testList = removeStopWords(lowerCaseNoSpace);
+
+        printStringList(testList);
 
         System.out.println("Length of file is: " + in.length() + "\n");
 
