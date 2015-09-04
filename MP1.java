@@ -114,6 +114,34 @@ public class MP1 {
                                          ));
     }
 
+    class StringFrequency implements Comparable<StringFrequency> {
+        String s;
+        Integer f;
+
+        public StringFrequency(String s, Integer f) {
+            this.s = s;
+            this.f = f;
+        }
+
+        public int compareTo(StringFrequency sfreq) {
+            if (this.f > sfreq.f) {
+                return -1;
+            } else if (this.f < sfreq.f) {
+                return 1;
+            } else {
+                return this.s.compareTo(sfreq.s);
+            }
+        }
+
+        public String toString() {
+           return s + "\t" + f.toString();
+        }
+
+        public String getString() {
+            return s;
+        }
+    }
+
 
     public String[] process() throws Exception {
         String[] ret = new String[20];
@@ -129,23 +157,38 @@ public class MP1 {
             AllLines.add(thisLine);
         }
 
-        // Generate index
+        // Generate index and set up hash map
         Integer[] index = getIndexes();
+        Map<String, Integer> hist = new HashMap<String, Integer>();
 
         // Process lines for each index
         for (int i = 0; i < index.length; i++ ) {
             String thisRecord = AllLines.get(index[i]);
+
+            List<String> thisLineWords = processThisLine(thisRecord);
+
+            for (String word : thisLineWords) {
+                if (hist.containsKey(word)){
+                    hist.put(word, hist.get(word) + 1);
+                }else {
+                    hist.put(word, 1);
+                }
+            }
         }
 
+        // Construct list of tuples and sort by frequency
+        List<StringFrequency> histList = new ArrayList<StringFrequency>();
+        for (Map.Entry<String, Integer> entry : hist.entrySet()) {
+            histList.add(new StringFrequency(entry.getKey(), entry.getValue()));
+        }
 
-        String test = "My dog has been eating an apple";
-        String[] lowerCaseNoSpace = removeWhiteSpace(toLowerCase(getTokenizedString(test)));
+        Collections.sort(histList);
 
-        List<String> testList = removeStopWords(lowerCaseNoSpace);
+        // Get the top twenty frequent strings
 
-        printStringList(testList);
-
-        System.out.println("Length of file is: " + in.length() + "\n");
+        for (int i = 0; i < ret.length && i < histList.size() ;i++ ) {
+            ret[i] = histList.get(i).getString();
+        }
 
         return ret;
     }
